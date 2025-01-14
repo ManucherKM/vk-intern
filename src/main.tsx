@@ -11,7 +11,10 @@ const IS_DEV = import.meta.env.VITE_IS_DEV
 createRoot(root).render(
   <>
   {IS_DEV ?
+  <StrictMode>
+
     <App />
+  </StrictMode>
   :
     <App/>
   }
