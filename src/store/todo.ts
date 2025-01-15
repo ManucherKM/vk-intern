@@ -17,14 +17,15 @@ class TodoInit {
 
 	async fetchTodos(_start: number, _limit: number) {
 		try {
-			const { data } = await api.get<ITodoItem[]>('todos', {
+			const response = await api.get<ITodoItem[]>('todos', {
 				params: {
 					_start,
 					_limit,
 				},
 			})
 
-			return data
+			
+			return response
 		} catch (e) {
 			console.error(e)
 		}
