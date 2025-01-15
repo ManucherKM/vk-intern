@@ -1,141 +1,154 @@
+// Types
+import type { ITodoItem } from '@/store/todo'
+import type { ChangeEvent } from 'react'
+
+// Components
+import { Button } from '@/components/ui/button'
 import {
-	Table,
-	TableBody,
-	TableCaption,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table'
-import { Todo } from '@/store/todo'
-import { Ellipsis } from 'lucide-react'
-import { observer, observerBatching } from 'mobx-react-lite'
-import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
-import { Button } from '../ui/button'
-import { Checkbox } from '../ui/checkbox'
-import { TypographyH3 } from '../ui/typography-h3'
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { AnimatePresence } from 'motion/react'
+import { TodoList } from '../todo-list/todo-list'
+import { Input } from '../ui/input'
+
+// Styles
 import classes from './styles/app.module.scss'
 
-const MotionRow = motion.create(TableRow)
+// Utils
+import { useFetchTodos } from '@/hooks/useFetchTodos'
+import { useObserver } from '@/hooks/useObserver'
+import { Todo } from '@/store/todo'
+import { observer } from 'mobx-react-lite'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { ModeToggle } from '../mode-toggle'
+import { ThemeProvider } from '../theme-provider'
+import { Toaster } from '../ui/toaster'
+
+export type TSortVariant = 'A-Z' | 'Z-A'
 
 export const App = observer(() => {
 	const [isVisible, setIsVisible] = useState(true)
-	const [startIdx, setStartIdx] = useState(0)
-	const [limit, setLimit] = useState(20)
 	const lastElRef = useRef(null)
-	const [totalCount, setTotalCount] = useState(0)
-	const [isLoading, setIsLoading] = useState(true)
+	const { isLoading, fetchTodos } = useFetchTodos()
+	const callIntersectionObserver = useObserver()
+	const [search, setSearch] = useState('')
+
+	const sortHandler = useCallback(
+		(todos: ITodoItem[], variant: TSortVariant) => {
+			if (variant === 'A-Z') {
+				Todo.setList([...todos.sort((a, b) => a.title.localeCompare(b.title))])
+			} else {
+				Todo.setList([...todos.sort((a, b) => b.title.localeCompare(a.title))])
+			}
+		},
+		[Todo.list, search],
+	)
+
+	function conditionHandler(todo: ITodoItem) {
+		// Тут по хорошему нужно использовать алгоритм растояния Левенштейна для более "грамотного" поиска задач
+		// Но для простоты (учитывая, что это тестовое задание, решил ограничиться поиском по подстроке).
+		// Прим. насколько я понял вопросы касательно алгоритмов и структур данных будут на собесе
+		if (todo.title.includes(search)) {
+			return true
+		}
+
+		return false
+	}
+
+	function editHandler(id: number) {
+		console.log(id);
+		
+	}
+
+	function removeHandler(id: number) {
+		const idx = Todo.list.findIndex(curr => curr.id === id)
+
+		if (idx === -1) {
+			return
+		}
+
+		Todo.setList(Todo.list.splice(idx + 1, 1))
+	}
+
+	function searchHandler(e: ChangeEvent<HTMLInputElement>) {
+		setSearch(e.target.value)
+	}
 
 	useEffect(() => {
-		const fetchTodos = async () => {
-			try {
-				setIsLoading(true)
-				if (!isVisible) {
-					return
-				}
-
-				if (startIdx >= totalCount && startIdx !== 0) {
-					return
-				}
-
-				const res = await Todo.fetchTodos(startIdx, limit)
-
-				const count = res?.headers['x-total-count']
-
-				if (totalCount === 0 && !!count) {
-					setTotalCount(count)
-				}
-
-				if (!res?.data?.length) return
-
-				const newList = [...Todo.list, ...res.data]
-
-				Todo.setList(newList)
-
-				setStartIdx(prev => prev + limit)
-			} catch (e) {
-				console.log(e)
-			} finally {
-				setIsLoading(false)
-			}
-		}
+		if (!isVisible) return
+		if (!!search.length) return
 
 		fetchTodos()
 	}, [isVisible])
 
-	function observerHandler(entries: IntersectionObserverEntry[]) {
-		const [entry] = entries
-
-		setIsVisible(entry.isIntersecting)
-	}
-
 	useEffect(() => {
-		if (!lastElRef.current) return
 		if (isLoading) return
 
-		const observer = new IntersectionObserver(observerHandler)
-		observer.observe(lastElRef.current)
+		const observerHandler = (entries: IntersectionObserverEntry[]) => {
+			const [entry] = entries
 
-		return () => {
-			if (!lastElRef.current) return
-
-			observer.unobserve(lastElRef.current)
+			setIsVisible(entry.isIntersecting)
 		}
-	}, [lastElRef.current, isLoading])
+
+		return callIntersectionObserver(lastElRef, observerHandler)
+	}, [lastElRef, isLoading])
 
 	return (
-		<AnimatePresence initial={false}>
-			<div className={classes.container}>
-				<TypographyH3 className={classes.title}>
-					Тестовое задание 1
-				</TypographyH3>
-				<Table>
-					<TableCaption>Список задач</TableCaption>
-					<TableHeader>
-						<TableRow>
-							<TableHead>
-								<Checkbox />
-							</TableHead>
-							<TableHead>№</TableHead>
-							<TableHead>Содержание</TableHead>
-							<TableHead>Статус</TableHead>
-							<TableHead>Действие</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{Todo.list.map((todo, idx) => (
-							<MotionRow
-								key={todo.id}
-								transition={{ duration: 1 }}
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 100 }}
-								exit={{
-									opacity: 0,
-								}}
-							>
-								<TableCell>
-									<Checkbox />
-								</TableCell>
-								<TableCell>{idx + 1}</TableCell>
-								<TableCell>{todo.title}</TableCell>
-								<TableCell>
-									{todo.completed ? 'Выполнено' : 'Не выполнено'}
-								</TableCell>
-								<TableCell>
-									<Button variant={'ghost'} size={'icon'}>
-										<Ellipsis />
-									</Button>
-								</TableCell>
-							</MotionRow>
-						))}
-					</TableBody>
-				</Table>
+		<>
+			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+				<Toaster />
+				<AnimatePresence initial={false}>
+					<div className={classes.container}>
+						<TodoList
+							title="Тестовое задание 1"
+							caption="Список задач"
+							cells={Todo.list}
+							heads={['№', 'Содержание', 'Статус', 'Действие']}
+							navigation={
+								<div className={classes.table_navigation}>
+									<div className="max-w-96 w-full">
+										<Input
+											placeholder="Поиск"
+											value={search}
+											onChange={searchHandler}
+										/>
+									</div>
+									<div className="flex gap-2">
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button variant="outline">Сортировка</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent className="w-56">
+												<DropdownMenuItem
+													onClick={() => sortHandler(Todo.list, 'A-Z')}
+												>
+													A-Z
+												</DropdownMenuItem>
+												<DropdownMenuItem
+													onClick={() => sortHandler(Todo.list, 'Z-A')}
+												>
+													Z-A
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+										<ModeToggle />
+									</div>
+								</div>
+							}
+							onEdit={editHandler}
+							onDelete={removeHandler}
+							condition={conditionHandler}
+						/>
 
-				{isLoading && 'Загрузка...'}
+						{isLoading && 'Загрузка...'}
 
-				<div ref={lastElRef} />
-			</div>
-		</AnimatePresence>
+						<div ref={lastElRef} />
+					</div>
+				</AnimatePresence>
+			</ThemeProvider>
+		</>
 	)
 })
