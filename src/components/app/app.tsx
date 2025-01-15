@@ -17,7 +17,7 @@ import { Checkbox } from '../ui/checkbox'
 import { TypographyH3 } from '../ui/typography-h3'
 import classes from './styles/app.module.scss'
 
-const MotionRow = motion(TableRow)
+const MotionRow = motion.create(TableRow)
 
 export const App = observer(() => {
 	const [isVisible, setIsVisible] = useState(true)
@@ -132,7 +132,9 @@ export const App = observer(() => {
 					</TableBody>
 				</Table>
 
-				<div ref={lastElRef} className="h-[20px] w-full bg-red-400" />
+				{isLoading && 'Загрузка...'}
+
+				<div ref={lastElRef} />
 			</div>
 		</AnimatePresence>
 	)

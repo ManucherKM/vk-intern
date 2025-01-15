@@ -24,7 +24,6 @@ class TodoInit {
 				},
 			})
 
-			
 			return response
 		} catch (e) {
 			console.error(e)
