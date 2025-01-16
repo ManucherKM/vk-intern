@@ -1,11 +1,17 @@
+// Utils
 import { Todo } from '@/store/todo'
 import { useState } from 'react'
 import { useToast } from './use-toast'
 
+// Вынес за пределы хука, чтобы не объявлялась по несколько раз при ререндерах хука
+// Лимит всегда один, поэтому в данном случае мы можем это сделать
 const limit = 20
 
+// Хук для получения задач
 export const useFetchTodos = () => {
+	// Состояния загрузки задач
 	const [isLoading, setIsLoading] = useState(false)
+
 	const [startIdx, setStartIdx] = useState(0)
 	const [totalCount, setTotalCount] = useState(0)
 	const { toast } = useToast()

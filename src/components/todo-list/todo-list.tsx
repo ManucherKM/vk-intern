@@ -32,7 +32,7 @@ export interface ITodoList {
 	heads: string[]
 	cells: ITodoItem[]
 	navigation?: ReactNode
-	onEdit?: (id: number) => void
+	isEdit?: boolean
 	onDelete?: (id: number) => void
 	condition?: (todo: ITodoItem) => boolean
 }
@@ -43,7 +43,7 @@ export const TodoList: FC<ITodoList> = ({
 	heads,
 	cells,
 	navigation,
-	onEdit,
+	isEdit,
 	onDelete,
 	condition,
 }) => {
@@ -82,13 +82,9 @@ export const TodoList: FC<ITodoList> = ({
 											{cell.completed ? 'Выполнено' : 'Не выполнено'}
 										</TableCell>
 										<TableCell>
-											{typeof onEdit === 'function' && (
+											{isEdit && (
 												<DialogTodoEdit todo={cell}>
-													<Button
-														variant={'ghost'}
-														size={'icon'}
-														onClick={() => onEdit(cell.id)}
-													>
+													<Button variant={'ghost'} size={'icon'}>
 														<Pen />
 													</Button>
 												</DialogTodoEdit>

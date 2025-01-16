@@ -59,18 +59,11 @@ export const App = observer(() => {
 	}
 
 	function editHandler(id: number) {
-		console.log(id);
-		
+		console.log(id)
 	}
 
 	function removeHandler(id: number) {
-		const idx = Todo.list.findIndex(curr => curr.id === id)
-
-		if (idx === -1) {
-			return
-		}
-
-		Todo.setList(Todo.list.splice(idx + 1, 1))
+		Todo.removeTodo(id)
 	}
 
 	function searchHandler(e: ChangeEvent<HTMLInputElement>) {
@@ -138,7 +131,7 @@ export const App = observer(() => {
 									</div>
 								</div>
 							}
-							onEdit={editHandler}
+							isEdit={true}
 							onDelete={removeHandler}
 							condition={conditionHandler}
 						/>
