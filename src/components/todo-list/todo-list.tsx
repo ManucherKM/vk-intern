@@ -65,20 +65,21 @@ export const TodoList: FC<ITodoList> = ({
 				</TableHeader>
 				<TableBody>
 					<List
+						animate={{ initial: false }}
 						arr={cells}
-						callback={(cell, idx) => {
+						callback={cell => {
 							if (typeof condition !== 'function' || condition(cell)) {
 								return (
 									<MotionRow
 										key={cell.id}
-										transition={{ duration: 1 }}
+										transition={{ duration: 0.3 }}
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 100 }}
 										exit={{
 											opacity: 0,
 										}}
 									>
-										<TableCell>{idx + 1}</TableCell>
+										<TableCell>{cell.id}</TableCell>
 										<TableCell>{cell.title}</TableCell>
 										<TableCell>
 											{cell.completed ? 'Выполнено' : 'Не выполнено'}

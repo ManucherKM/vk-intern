@@ -125,53 +125,51 @@ export const App = observer(() => {
 		<>
 			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 				<Toaster />
-				<AnimatePresence initial={false}>
-					<div className={classes.container}>
-						<TodoList
-							title="Тестовое задание 1"
-							caption="Список задач"
-							cells={Todo.list}
-							navigation={
-								<div className={classes.table_navigation}>
-									<div className="max-w-96 w-full">
-										<Input
-											placeholder="Поиск"
-											value={search}
-											onChange={searchHandler}
-										/>
-									</div>
-									<div className="flex gap-2">
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<Button variant="outline">Сортировка</Button>
-											</DropdownMenuTrigger>
-											<DropdownMenuContent className="w-56">
-												<DropdownMenuItem
-													onClick={() => sortHandler(Todo.list, 'A-Z')}
-												>
-													A-Z
-												</DropdownMenuItem>
-												<DropdownMenuItem
-													onClick={() => sortHandler(Todo.list, 'Z-A')}
-												>
-													Z-A
-												</DropdownMenuItem>
-											</DropdownMenuContent>
-										</DropdownMenu>
-										<ModeToggle />
-									</div>
+				<div className={classes.container}>
+					<TodoList
+						title="Тестовое задание 1"
+						caption="Список задач"
+						cells={Todo.list}
+						navigation={
+							<div className={classes.table_navigation}>
+								<div className="max-w-96 w-full">
+									<Input
+										placeholder="Поиск"
+										value={search}
+										onChange={searchHandler}
+									/>
 								</div>
-							}
-							onEdit={editHandler}
-							onDelete={removeHandler}
-							condition={conditionHandler}
-						/>
+								<div className="flex gap-2">
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button variant="outline">Сортировка</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent className="w-56">
+											<DropdownMenuItem
+												onClick={() => sortHandler(Todo.list, 'A-Z')}
+											>
+												A-Z
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={() => sortHandler(Todo.list, 'Z-A')}
+											>
+												Z-A
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+									<ModeToggle />
+								</div>
+							</div>
+						}
+						onEdit={editHandler}
+						onDelete={removeHandler}
+						condition={conditionHandler}
+					/>
 
-						{isLoading && 'Загрузка...'}
+					{isLoading && 'Загрузка...'}
 
-						<div ref={lastElRef} />
-					</div>
-				</AnimatePresence>
+					<div ref={lastElRef} />
+				</div>
 			</ThemeProvider>
 		</>
 	)

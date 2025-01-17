@@ -1,5 +1,9 @@
 // Types
-import type { ReactNode } from 'react'
+import type { AnimatePresenceProps } from 'motion/react'
+import type { PropsWithChildren, ReactNode } from 'react'
+
+// Components
+import { AnimatePresence } from 'motion/react'
 
 // Я вроде уже писал, что в идеале нужно все, до чего можем дотянуться описать через JSDoc
 // Но делать этого не стал в угоду простоте (в рамках тестового задания)
@@ -18,6 +22,9 @@ export interface IList<T> {
 	 * @param arr The original array.
 	 */
 	callback: (item: T, idx: number, arr: T[]) => ReactNode
+
+	/** Props for animation. Under the hood, it uses AnimatePresence. */
+	animate?: PropsWithChildren<AnimatePresenceProps>
 }
 
 /**
@@ -27,6 +34,14 @@ export interface IList<T> {
  *
  * @param props Propses
  */
-export function List<T>({ arr, callback }: IList<T>) {
-	return arr.map(callback)
+export function List<T>({ arr, callback, animate }: IList<T>) {
+	return (
+		<>
+			{!!animate ? (
+				<AnimatePresence {...animate}>{arr.map(callback)}</AnimatePresence>
+			) : (
+				<>{arr.map(callback)}</>
+			)}
+		</>
+	)
 }
