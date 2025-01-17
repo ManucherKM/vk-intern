@@ -32,7 +32,6 @@ const MotionRow = motion.create(TableRow)
 export interface ITodoList {
 	title: string
 	caption: string
-	heads: string[]
 	cells: ITodoItem[]
 	navigation?: ReactNode
 	onEdit?: IDialogTodoEdit['onEdit']
@@ -44,7 +43,6 @@ export interface ITodoList {
 export const TodoList: FC<ITodoList> = ({
 	title,
 	caption,
-	heads,
 	cells,
 	navigation,
 	onEdit,
@@ -59,10 +57,10 @@ export const TodoList: FC<ITodoList> = ({
 				<TableCaption>{caption}</TableCaption>
 				<TableHeader>
 					<TableRow>
-						<List
-							arr={heads}
-							callback={head => <TableHead key={head}>{head}</TableHead>}
-						/>
+						<TableHead>№</TableHead>
+						<TableHead className="w-3/5">Содержание</TableHead>
+						<TableHead>Статус</TableHead>
+						<TableHead className="text-right">Действие</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -85,7 +83,7 @@ export const TodoList: FC<ITodoList> = ({
 										<TableCell>
 											{cell.completed ? 'Выполнено' : 'Не выполнено'}
 										</TableCell>
-										<TableCell>
+										<TableCell className="text-right">
 											{typeof onEdit === 'function' && (
 												<DialogTodoEdit todo={cell} onEdit={onEdit}>
 													<Button variant={'ghost'} size={'icon'}>

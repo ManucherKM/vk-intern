@@ -131,7 +131,6 @@ export const App = observer(() => {
 							title="Тестовое задание 1"
 							caption="Список задач"
 							cells={Todo.list}
-							heads={['№', 'Содержание', 'Статус', 'Действие']}
 							navigation={
 								<div className={classes.table_navigation}>
 									<div className="max-w-96 w-full">
