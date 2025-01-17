@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils'
-import { describe, expect, test } from '@jest/globals'
 
 describe('Utils', () => {
 	test('Regular string splicing.', () => {
