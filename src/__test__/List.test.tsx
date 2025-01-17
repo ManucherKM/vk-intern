@@ -3,7 +3,10 @@ import type { ReactNode } from 'react'
 
 // Components
 import { List } from '@/components/list'
-import { AnimatePresence } from 'motion/react'
+
+// Мы мокаем это значение, поэтому не можем удалить
+// @ts-ignore
+import { AnimatePresence } from 'motion/react' 
 
 // Utils
 import '@testing-library/jest-dom'
