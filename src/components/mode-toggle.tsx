@@ -1,7 +1,11 @@
-import { useTheme } from '@/components/theme-provider'
+// Components
 import { Button } from '@/components/ui/button'
 import { Moon, Sun } from 'lucide-react'
 
+// Utils
+import { useTheme } from '@/components/theme-provider'
+
+// Кнопка для смены темы
 export function ModeToggle() {
 	const { setTheme, theme } = useTheme()
 

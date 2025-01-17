@@ -1,6 +1,7 @@
 // Types
 import type { ITodoItem } from '@/store/todo'
 import type { FC, ReactNode } from 'react'
+import type { IDialogTodoEdit } from '../dialog-todo-edit'
 
 // Components
 import { Button } from '@/components/ui/button'
@@ -24,26 +25,29 @@ import classes from './styles/todo-list.module.scss'
 import { motion } from 'motion/react'
 import { DialogTodoEdit } from '../dialog-todo-edit'
 
+// Компонент TableRow обернутый библиотекой framer-motion, для анимаций (в нашем случае это анимации на удаление/добавление список)
 const MotionRow = motion.create(TableRow)
 
+// Интерфейс компонента TodoList
 export interface ITodoList {
 	title: string
 	caption: string
 	heads: string[]
 	cells: ITodoItem[]
 	navigation?: ReactNode
-	isEdit?: boolean
+	onEdit?: IDialogTodoEdit['onEdit']
 	onDelete?: (id: number) => void
 	condition?: (todo: ITodoItem) => boolean
 }
 
+// Компонент TodoList. Вынес в отдельный компонент, чтобы была возможность отображать списки задач, не зависимо друг от друга
 export const TodoList: FC<ITodoList> = ({
 	title,
 	caption,
 	heads,
 	cells,
 	navigation,
-	isEdit,
+	onEdit,
 	onDelete,
 	condition,
 }) => {
@@ -82,8 +86,8 @@ export const TodoList: FC<ITodoList> = ({
 											{cell.completed ? 'Выполнено' : 'Не выполнено'}
 										</TableCell>
 										<TableCell>
-											{isEdit && (
-												<DialogTodoEdit todo={cell}>
+											{typeof onEdit === 'function' && (
+												<DialogTodoEdit todo={cell} onEdit={onEdit}>
 													<Button variant={'ghost'} size={'icon'}>
 														<Pen />
 													</Button>

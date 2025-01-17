@@ -1,6 +1,10 @@
 // Types
 import type { ReactNode } from 'react'
 
+// Я вроде уже писал, что в идеале нужно все, до чего можем дотянуться описать через JSDoc
+// Но делать этого не стал в угоду простоте (в рамках тестового задания)
+// Но чтобы показать, что я понимаю о чем говорю, я расписал 1 файл
+
 /** `List` component interface */
 export interface IList<T> {
 	/** The array that will be iterated over. */
@@ -19,8 +23,7 @@ export interface IList<T> {
 /**
  * A component for rendering lists.
  *
- * @example
- * 	;<List arr={[1, 2, 3]} callback={num => <span>{num}</span>} />
+ * @example <List arr={[1, 2, 3]} callback={num => <span>{num}</span>} />
  *
  * @param props Propses
  */

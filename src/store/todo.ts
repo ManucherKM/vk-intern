@@ -2,6 +2,9 @@
 import { api } from '@/axios'
 import { makeAutoObservable } from 'mobx'
 
+// Допустимые типы для изменения задачи
+export type IUpdateTodo = Partial<Omit<ITodoItem, 'id' | 'userId'>>
+
 // Тут в идеале нужно JSDoc использовать, но для простоты решил ограничиться комментариями в проекте
 export interface ITodoItem {
 	id: number
@@ -24,6 +27,7 @@ class TodoInit {
 	// Запрос на получение задач
 	async fetchTodos(_start: number, _limit: number) {
 		try {
+			// Отправляем запрос на API и получаем ответ
 			const response = await api.get<ITodoItem[]>('todos', {
 				params: {
 					_start,
@@ -46,7 +50,28 @@ class TodoInit {
 		}
 	}
 
-	// Метод для удаления (локально) задачи
+	// Метод для изменения задачи (локально)
+	editTodo(id: number, update: IUpdateTodo) {
+		// Ищем индекс задачи в списке
+		const foundIdx = this.list.findIndex(todo => todo.id === id)
+
+		// Если индекс не найден
+		if (foundIdx === -1) {
+			// Прерываем дальнейшее выполнение функции
+			return
+		}
+
+		// Создаем новый список
+		const newTodoList = [...Todo.list]
+
+		// Изменяем нужную задачу
+		newTodoList[foundIdx] = { ...newTodoList[foundIdx], ...update }
+
+		// Переопределяем список из стора на новый
+		this.list = newTodoList
+	}
+
+	// Метод для удаления задачи (локально)
 	removeTodo(id: number) {
 		// Этот участок можно оптимизировать алгоритмом бинарного поиска (первое что пришло в голову) т.к. задачи подтягиваются с апи по порядку (от меньшего id к большему)
 		// Но для простоты решил ограничится циклом со сложностью O(n)
@@ -63,4 +88,7 @@ class TodoInit {
 	}
 }
 
+// Не экспортирую новый класс по умолчанию т.к. экспорты по умолчанию хуже "видит" редактор кода
+// + экспорт с фиксированым названием позволяет привести код с использованием этого класса в единый стиль
+// А в исключительных случаях мы можем импортировать класс через ключевое слово "as", указав нужное нам имя
 export const Todo = new TodoInit()

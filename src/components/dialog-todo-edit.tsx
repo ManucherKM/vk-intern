@@ -1,4 +1,6 @@
-import { Button } from '@/components/ui/button'
+// Components
+import { Button } from './ui/button'
+import { Checkbox } from './ui/checkbox'
 import {
 	Dialog,
 	DialogContent,
@@ -7,36 +9,48 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { ITodoItem, Todo } from '@/store/todo'
-import { FC, ReactNode, useState } from 'react'
-import { Checkbox } from './ui/checkbox'
+} from './ui/dialog'
+import { Input } from './ui/input'
 import { Label } from './ui/label'
 
+// Types
+import type { ITodoItem, IUpdateTodo } from '@/store/todo'
+import type { FC, ReactNode } from 'react'
+
+// Utils
+import { useState } from 'react'
+
+// Интерфейс диалогового окна для изменения задачи
 export interface IDialogTodoEdit {
 	children: ReactNode
 	todo: ITodoItem
+	onEdit?: (prev: ITodoItem, update: IUpdateTodo) => void
 }
 
-export const DialogTodoEdit: FC<IDialogTodoEdit> = ({ children, todo }) => {
+// Диалоговое окно для изменения задачи
+export const DialogTodoEdit: FC<IDialogTodoEdit> = ({
+	children,
+	todo,
+	onEdit,
+}) => {
+	// Состояние заголовка
 	const [title, setTitle] = useState(todo.title)
+
+	// Состояние выполнения
 	const [completed, setCompleted] = useState(todo.completed)
+
+	// Состояние открытости/закрытости диалогового окна
 	const [open, setOpen] = useState(false)
 
-	function saveHandler() {
-		const foundIdx = Todo.list.findIndex(curr => curr.id === todo.id)
-
-		if (foundIdx === -1) {
-			return
+	// Функция которая отрабатывает при нажатии на кнопку сохранения
+	function saveClickHandler() {
+		// Если мы передали функцию для обновления
+		if (onEdit) {
+			// Вызываем ее передав параметры
+			onEdit(todo, { title, completed })
 		}
 
-		const newTodoList = [...Todo.list]
-
-		newTodoList[foundIdx] = { ...todo, title, completed }
-
-		Todo.setList(newTodoList)
-
+		// Закрываем диалоговое окно
 		setOpen(false)
 	}
 
@@ -74,7 +88,7 @@ export const DialogTodoEdit: FC<IDialogTodoEdit> = ({ children, todo }) => {
 					</div>
 				</div>
 				<DialogFooter>
-					<Button onClick={saveHandler}>Сохранить</Button>
+					<Button onClick={saveClickHandler}>Сохранить</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
