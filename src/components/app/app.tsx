@@ -177,7 +177,7 @@ export const App = observer(() => {
 
 					{isLoading && 'Загрузка...'}
 
-					<div ref={lastElRef} />
+					<div ref={lastElRef} data-testid="element-trigger" />
 				</div>
 			</ThemeProvider>
 		</>

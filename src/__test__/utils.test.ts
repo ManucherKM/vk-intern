@@ -1,5 +1,8 @@
+// Utils
 import { cn } from '@/lib/utils'
 
+// Обернул в общий блок для удобства
+// Тут очень простые тесты, поэтому думаю, что объяснения не нужны
 describe('Utils', () => {
 	test('Regular string splicing.', () => {
 		expect(cn('1', '2')).toBe('1 2')
