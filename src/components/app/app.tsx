@@ -11,7 +11,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { AnimatePresence } from 'motion/react'
 import { ModeToggle } from '../mode-toggle'
 import { ThemeProvider } from '../theme-provider'
 import { TodoList } from '../todo-list/todo-list'
