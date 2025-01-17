@@ -124,7 +124,7 @@ export const App = observer(() => {
 		<>
 			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 				<Toaster />
-				<div className={classes.container}>
+				<div className={classes.container} data-testid="app-container">
 					<TodoList
 						title="Тестовое задание 1"
 						caption="Список задач"
@@ -153,6 +153,16 @@ export const App = observer(() => {
 												onClick={() => sortHandler(Todo.list, 'Z-A')}
 											>
 												Z-A
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={() => sortHandler(Todo.list, '№ ↑')}
+											>
+												№ ↑
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onClick={() => sortHandler(Todo.list, '№ ↓')}
+											>
+												№ ↓
 											</DropdownMenuItem>
 										</DropdownMenuContent>
 									</DropdownMenu>
